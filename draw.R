@@ -477,12 +477,16 @@ edo_down <- pairwise_termsim(downkegg)
 emapplot(edo_down, layout="kk") 
 #对通路关系网络进行聚类展示
 emapplot_cluster(edo_down, node_scale=1.5, layout="kk")
-#关于IFN
-load('group_CD8T.Rdata')
-load('mRNA_CD8T.Rdata')
-IFN<-list("IFNG","IFNLR1")
-names(IFN)<-c("IFNG","IFNLR1")
-#进行gsva分析
-re1 <- gsva(mRNA, IFN, method="ssgsea",
-           mx.diff=FALSE, verbose=FALSE)
-draw_boxplot(re1,group,color = c("#e5171a","#1d4a9b"),ylab="Value", xlab = 'IFN')
+
+#构建差异基因矩阵
+selectgene_list <- rownames(res1_select)
+mRNA_select <- mRNA[selectgene_list,]
+mRNA_select <- t(mRNA_select)
+
+#表达相关性分析
+corr.result<-cor(mRNA_select,method = 'pearson') #计算相关性系数
+ggcorrplot(corr= corr.result,
+           hc.order = TRUE, 
+           tl.cex = 0.1, 
+           outline = FALSE,
+           )
